@@ -114,46 +114,45 @@ export default class App extends Component {
             "Francis Strickland",
             "Joel Cooper"
           ],
-          jobTitle: "Sales Executive",
-          employmentType: "Permanent"
+          jobTitle: "Sales Executive"
         }
       ],
-      columnDefs: [{ field: "jobTitle" }, { field: "employmentType" }],
+      columnDefs: [
+        { field: "jobTitle" },
+        {
+          field: "employmentType",
+          valueGetter: function(params) {
+            console.log("====params", params);
+            return params.data.employmentType
+              ? params.data.employmentType
+              : "Contract";
+          }
+        }
+      ],
       defaultColDef: { flex: 1 },
       autoGroupColumnDef: {
-        headerName: "Organisation Hierarchy",
+        headerName: "Company Hierarchy",
         minWidth: 300,
         cellRendererParams: { suppressCount: true }
+        // suppressCount - to display/Hide number (count) in the headerName Column
       },
-      groupDefaultExpanded: -1,
+      groupDefaultExpanded: -1, // expand all on initial state
       getDataPath: function(data) {
+        console.log("rowData", data); // return each row data
         return data.orgHierarchy;
       }
     };
   }
 
   onGridReady = params => {
+    console.log("....onGridReady", params);
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-  };
-
-  onFilterTextBoxChanged = () => {
-    this.gridApi.setQuickFilter(
-      document.getElementById("filter-text-box").value
-    );
   };
 
   render() {
     return (
       <div style={{ width: "100%", height: "100%" }}>
-        <div style={{ marginBottom: "5px" }}>
-          <input
-            type="text"
-            id="filter-text-box"
-            placeholder="Filter..."
-            onInput={() => this.onFilterTextBoxChanged()}
-          />
-        </div>
         <div style={{ height: "calc(100% - 25px)" }}>
           <div
             id="myGrid"
